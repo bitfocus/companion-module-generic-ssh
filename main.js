@@ -153,7 +153,7 @@ class SSHInstance extends InstanceBase {
 				this.log('debug', 'Interactive triggered: ' + JSON.stringify(instructionsLang));
 				this.log('debug', 'Interactive triggered: ' + JSON.stringify(prompts));
 				if (prompts.length === 1
-					&& prompts[0].prompt.match(/Password/gi) === null) {
+					&& prompts[0].prompt.match(/Password/gim) !== null) {
 					finish([this.config.password]);
 				}
 			})

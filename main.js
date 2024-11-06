@@ -81,9 +81,10 @@ class SSHInstance extends InstanceBase {
 				privateKey: loadedPrivateKey,
 				passphrase: this.config.passphrase,
 				keepaliveInterval: this.config.keepaliveInterval,
+				tryKeyboard: true,
 				algorithms: algorithms.createAlgorithmsObjectForSSH2(this.config),
 				readyTimeout: this.config.handshakeCompleteTimeout,
-				debug: (debugStr) => {this.log('debug', debugStr)} // provides advanced debug info from ssh2 if debug logs are enabled.
+				debug: (debugStr) => { this.log('debug', debugStr) } // provides advanced debug info from ssh2 if debug logs are enabled.
 			}
 
 			try {
@@ -103,13 +104,14 @@ class SSHInstance extends InstanceBase {
 				this.log(
 					'error',
 					'Server requests that you change your password, please do this manually and try the module again in Companion: ' +
-						message
+					message
 				)
 				this.updateStatus(InstanceStatus.ConnectionFailure)
 			})
 
 			this.sshClient.on('error', (err) => {
 				this.log('error', 'Server connection error: ' + err)
+				this.log('error', JSON.stringify(clientConfig))
 				this.updateStatus(InstanceStatus.ConnectionFailure)
 				this.queueReconnect()
 			})
@@ -151,7 +153,7 @@ class SSHInstance extends InstanceBase {
 				this.log('debug', 'Interactive triggered: ' + JSON.stringify(instructionsLang));
 				this.log('debug', 'Interactive triggered: ' + JSON.stringify(prompts));
 				if (prompts.length === 1
-					  && prompts[0].prompt === "Password: ") {
+					&& prompts[0].prompt.match(/Password/gi) === null) {
 					finish([this.config.password]);
 				}
 			})

@@ -9,6 +9,7 @@ const algorithms = require('./algorithms')
 
 const Constants = {
 	CMD_ERROR_VAR_NAME: 'returnedError',
+	CMD_RETURN_VAR_NAME: 'returnedValue',
 	CMD_ERROR_FEEDBACK_NAME: 'commandErrorState',
 	RECONNECT_INVERVAL_MS: 1000
 }

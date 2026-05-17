@@ -13,6 +13,17 @@ const Constants = {
 	RECONNECT_INVERVAL_MS: 1000
 }
 
+// Redact sensitive fields from the client config for logging purposes
+function redactClientConfig(clientConfig) {
+	const redacted = { ...clientConfig }
+	for (const field of ['privateKey', 'password', 'passphrase']) {
+		if (redacted[field]) {
+			redacted[field] = '[REDACTED]'
+		}
+	}
+	return redacted
+}
+
 class SSHInstance extends InstanceBase {
 	constructor(internal) {
 		super(internal)
@@ -111,7 +122,7 @@ class SSHInstance extends InstanceBase {
 
 			this.sshClient.on('error', (err) => {
 				this.log('error', 'Server connection error: ' + err)
-				this.log('error', JSON.stringify(clientConfig))
+				this.log('error', JSON.stringify(redactClientConfig(clientConfig)))
 				this.updateStatus(InstanceStatus.ConnectionFailure)
 				this.queueReconnect()
 			})

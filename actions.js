@@ -49,6 +49,7 @@ module.exports = function (self) {
 						})
 
 						stream.on('data', (data) => {
+							self.setVariableValues({ [self.getConstants().CMD_RETURN_VAR_NAME]: data.toString() })
 							self.log('debug', data.toString())
 						})
 					})

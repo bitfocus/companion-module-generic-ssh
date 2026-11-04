@@ -17,13 +17,18 @@
 		"type": "node26",
 		"api": "nodejs-ipc",
 		"apiVersion": "0.0.0",
-		"entrypoint": "../main.js"
+		"entrypoint": "../main.js",
+		"permissions": {
+			"filesystem": true
+		}
 	},
 	"legacyIds": [],
 	"manufacturer": "Generic",
-	"products": ["SSH"],
-	"keywords": ["Protocol", "Generic"],
-	"permissions": {
-		"filesystem": true
-	}
+	"products": [
+		"SSH"
+	],
+	"keywords": [
+		"Protocol",
+		"Generic"
+	]
 }

@@ -24,11 +24,6 @@
 	},
 	"legacyIds": [],
 	"manufacturer": "Generic",
-	"products": [
-		"SSH"
-	],
-	"keywords": [
-		"Protocol",
-		"Generic"
-	]
+	"products": ["SSH"],
+	"keywords": ["Protocol", "Generic"]
 }

@@ -17,9 +17,8 @@ module.exports = function (self) {
 				self.setVariableValues({ [self.getConstants().CMD_ERROR_VAR_NAME]: false })
 				self.checkFeedbacks(self.getConstants().CMD_ERROR_FEEDBACK_NAME)
 
-				let cmd = event.options.cmd
-				//parse the command for any variables
-				let cmdParsed = await self.parseVariablesInString(cmd)
+				// Companion resolves useVariables options before invoking the callback.
+				let cmdParsed = event.options.cmd
 
 				// we need to check for line breaks and execute each line as a separate command
 				// NOTE: if you need \n to be in the string without a linefeed, you can use \\n to escape \n representing linefeed
@@ -72,9 +71,8 @@ module.exports = function (self) {
 				self.setVariableValues({ [self.getConstants().CMD_ERROR_VAR_NAME]: false })
 				self.checkFeedbacks(self.getConstants().CMD_ERROR_FEEDBACK_NAME)
 
-				let cmd = event.options.cmd
-				//parse the command for any variables
-				let cmdParsed = await self.parseVariablesInString(cmd)
+				// Companion resolves useVariables options before invoking the callback.
+				let cmdParsed = event.options.cmd
 
 				self.log('debug', 'Executing advanced command: ' + cmdParsed);
 

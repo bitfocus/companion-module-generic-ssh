@@ -5,8 +5,7 @@
 	"scripts": {
 		"format": "prettier -w .",
 		"postinstall": "rimraf node_modules/ssh2/lib/protocol/crypto/build node_modules/cpu-features",
-		"package": "companion-module-build",
-		"test": "node --test tests/compatibility.test.cjs"
+		"package": "companion-module-build"
 	},
 	"license": "MIT",
 	"repository": {

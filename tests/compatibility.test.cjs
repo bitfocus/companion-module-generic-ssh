@@ -44,7 +44,7 @@ function loadInstance() {
 			this.logs.push([level, message])
 		}
 		async parseVariablesInString(text) {
-			return text.replace('$(local:command)', 'echo hello')
+			throw new Error('Commands must not be parsed twice')
 		}
 	}
 	const filename = resolve(__dirname, '../main.js')
@@ -173,7 +173,7 @@ for (const authentication of ['password', 'private key', 'encrypted private key'
 			await until(() => connections === 1 && instance.statuses.at(-1) === base.InstanceStatus.Ok)
 			assert.equal(instance.getConfigFields().find((field) => field.id === 'port').default, 22)
 			assert.equal(instance.definitions[0].variableId, 'returnedError')
-			await instance.actions.execCommand.callback({ options: { cmd: '$(local:command)\\nprintf \\\\n' } })
+			await instance.actions.execCommand.callback({ options: { cmd: 'echo hello\\nprintf \\\\n' } })
 			await until(() => commands.length === 2)
 			assert.deepEqual(commands, ['echo hello', 'printf \\n'])
 			await until(() => instance.logs.some(([, message]) => message === 'controlled output'))
@@ -185,7 +185,7 @@ for (const authentication of ['password', 'private key', 'encrypted private key'
 			await instance.actions.execCommand.callback({ options: { cmd: 'fail' } })
 			await until(() => instance.logs.some(([, message]) => message.includes('error code: 7')))
 			assert.equal(instance.values.returnedError, true)
-			await instance.actions.shellCommand.callback({ options: { cmd: '$(local:command)\\nprintf \\\\n' } })
+			await instance.actions.shellCommand.callback({ options: { cmd: 'echo hello\\nprintf \\\\n' } })
 			await until(() => shells.length === 1)
 			assert.equal(shells[0], 'echo hello\nprintf \\n\nexit\n')
 			await until(() => instance.logs.some(([, message]) => message === 'shell output'))
@@ -202,3 +202,17 @@ for (const authentication of ['password', 'private key', 'encrypted private key'
 		},
 	)
 }
+
+// Values returned by the host may themselves contain variable-looking text.
+// Evaluating them again changes the command compared with the published SDK.
+test('already resolved commands retain literal variable-looking output', async () => {
+	const instance = loadInstance()
+	instance.updateActions()
+	instance.getConstants = () => ({ CMD_ERROR_VAR_NAME: 'returnedError', CMD_ERROR_FEEDBACK_NAME: 'commandErrorState' })
+	const sent = []
+	instance.sshClient = { exec: (command) => sent.push(command) }
+	assert.equal(instance.actions.execCommand.options[0].useVariables, true)
+	assert.equal(instance.actions.shellCommand.options[0].useVariables, true)
+	await instance.actions.execCommand.callback({ options: { cmd: 'echo $(literal:value)' } })
+	assert.deepEqual(sent, ['echo $(literal:value)'])
+})

@@ -14,7 +14,7 @@
 		}
 	],
 	"runtime": {
-		"type": "node18",
+		"type": "node26",
 		"api": "nodejs-ipc",
 		"apiVersion": "0.0.0",
 		"entrypoint": "../main.js"
@@ -22,5 +22,8 @@
 	"legacyIds": [],
 	"manufacturer": "Generic",
 	"products": ["SSH"],
-	"keywords": ["Protocol", "Generic"]
+	"keywords": ["Protocol", "Generic"],
+	"permissions": {
+		"filesystem": true
+	}
 }
